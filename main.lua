@@ -8,7 +8,15 @@ local LocalPlayer = Players.LocalPlayer
 
 print("hacking into cometpanel..")
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-local CometPanel = PlayerGui:WaitForChild("CometPanel")
+
+local CometPanel
+repeat
+    CometPanel = PlayerGui:FindFirstChild("CometPanel")
+    if not CometPanel then
+        task.wait(0.5)
+    end
+until CometPanel
+
 local Assets = CometPanel:WaitForChild("Assets")
 local Utility = Assets:WaitForChild("Utility")
 
@@ -33,22 +41,54 @@ utility:Fire({
     GameID = 125328885809247
 })
 
-print("waiting for players to teleport...")
+print("teleporting..")
+
+utility:Fire({
+    Players = targets,
+    GameID = 125328885809247
+})
+
+print("looking for signs of life...")
+
+local Players = game:GetService("Players")
+local startTime = os.clock()
+local timeout = 120
 
 repeat
     task.wait(0.5)
 
-    local allTeleported = true
+    local remaining = 0
 
     for _, player in ipairs(targets) do
-        if player and player.Parent == game:GetService("Players") then
-            allTeleported = false
-            break
+        if Players:FindFirstChild(player.Name) == player then
+            remaining += 1
         end
     end
-until allTeleported
 
-print("all players teleported; server hopping...")
+    print("Players remaining: " .. remaining)
+
+    if remaining == 0 then
+        break
+    end
+until os.clock() - startTime >= timeout
+
+local remaining = 0
+
+for _, player in ipairs(targets) do
+    if Players:FindFirstChild(player.Name) == player then
+        remaining += 1
+    end
+end
+
+if remaining > 0 then
+    warn(remaining .. " player(s) are still in this server; not confirmed teleported.")
+else
+    print("All target players have left the server.")
+end
+
+task.wait(30)
+
+print("server hopping...")
 
 local success, result = pcall(function()
     return game:HttpGet(
