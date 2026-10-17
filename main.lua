@@ -71,9 +71,9 @@ if success then
         local serverId = servers[math.random(1, #servers)]
 
         if typeof(queue_on_teleport) == "function" then
-            queue_on_teleport("loadstring(game:HttpGet('https://pastebin.com/raw/N4JJqrNx'))()")
+            queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/viomod/comet/refs/heads/main/main.lua'))()")
         elseif typeof(queueonteleport) == "function" then
-            queueonteleport("loadstring(game:HttpGet('https://pastebin.com/raw/N4JJqrNx'))()")
+            queueonteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/viomod/comet/refs/heads/main/main.lua'))()")
         end
 
         TeleportService:TeleportToPlaceInstance(placeId, serverId, Players.LocalPlayer)
