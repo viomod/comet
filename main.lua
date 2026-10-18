@@ -28,51 +28,6 @@ local Utility = Assets:WaitForChild("Utility")
 local Event = game:GetService("ReplicatedStorage").Modules.Network.Network.RemoteEvent
 local utility = require(Utility)
 
-local FILE = "recurring_players.txt"
-local seen = {}
-
--- Load existing log
-if isfile(FILE) then
-    for line in readfile(FILE):gmatch("[^\r\n]+") do
-        local name = line:match("^([^|]+)")
-        if name then
-            seen[name] = true
-        end
-    end
-end
-
-local function logPlayer(player)
-    if player == LocalPlayer then
-        return
-    end
-
-    local name = player.Name
-
-    if seen[name] then
-        print("[RECURRING] " .. name)
-
-        Event:FireServer(
-            "ExecuteCommand",
-            "BanPlayer",
-            name,
-            name,
-            "Other (use ban duration!)",
-            "FOREVER",
-            ""
-        )
-        return
-    end
-
-    seen[name] = true
-
-    appendfile(FILE, name .. " | " .. os.date("%Y-%m-%d %H:%M:%S") .. "\n")
-    print("[LOGGED] " .. name)
-end
-
-for _, player in ipairs(Players:GetPlayers()) do
-    logPlayer(player)
-end
-
 print("sending banish request...")
 
 local TargetPlayers = {}
@@ -92,7 +47,21 @@ Event:FireServer(
     }
 )
 
-task.wait(15)
+for _, player in ipairs(TargetPlayers) do
+    print("Processing player:", player.Name)
+
+    Event:FireServer(
+        "ExecuteCommand",
+        "BanPlayer",
+        player.Name,
+        player.Name,
+        "play reworken!",
+        "FOREVER",
+        ""
+    )
+end
+
+task.wait(30)
 
 print("server hopping...")
 
