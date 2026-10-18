@@ -4,7 +4,13 @@ local TeleportService = game:GetService("TeleportService")
 local HttpService = game:GetService("HttpService")
 local placeId = game.PlaceId
 local currentJobId = game.JobId
-local LocalPlayer = Players.LocalPlayer
+
+local LocalPlayer
+
+repeat
+    LocalPlayer = Players.LocalPlayer
+    task.wait(0.1)
+until LocalPlayer
 
 print("hacking into cometpanel..")
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
