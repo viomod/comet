@@ -48,7 +48,7 @@ Event:FireServer(
     }
 )
 
-task.wait(10)
+task.wait(25)
 
 print("server hopping...")
 
