@@ -19,74 +19,30 @@ until CometPanel
 
 local Assets = CometPanel:WaitForChild("Assets")
 local Utility = Assets:WaitForChild("Utility")
+local Event = game:GetService("ReplicatedStorage").Modules.Network.Network.RemoteEvent
 
 local utility = require(Utility)
 
--- Keep only selected players other than yourself.
-print("selecting players..")
-local selectedPlayers = utility:GetPlayersFromSelection()
-local targets = {}
+print("sending banish request...")
 
-print("doing others instead of all..")
-for _, player in ipairs(selectedPlayers) do
+local TargetPlayers = {}
+
+for _, player in ipairs(Players:GetPlayers()) do
     if player ~= LocalPlayer then
-        table.insert(targets, player)
+        table.insert(TargetPlayers, player)
     end
 end
 
-print("teleporting..")
+Event:FireServer(
+    "Starman",
+    {
+        Players = TargetPlayers,
+        GameID = "125328885809247",
+        CommandName = "BanishPlayer"
+    }
+)
 
-utility:Fire({
-    Players = targets,
-    GameID = 125328885809247
-})
-
-print("teleporting..")
-
-utility:Fire({
-    Players = targets,
-    GameID = 125328885809247
-})
-
-print("looking for signs of life...")
-
-local Players = game:GetService("Players")
-local startTime = os.clock()
-local timeout = 120
-
-repeat
-    task.wait(0.5)
-
-    local remaining = 0
-
-    for _, player in ipairs(targets) do
-        if Players:FindFirstChild(player.Name) == player then
-            remaining += 1
-        end
-    end
-
-    print("Players remaining: " .. remaining)
-
-    if remaining == 0 then
-        break
-    end
-until os.clock() - startTime >= timeout
-
-local remaining = 0
-
-for _, player in ipairs(targets) do
-    if Players:FindFirstChild(player.Name) == player then
-        remaining += 1
-    end
-end
-
-if remaining > 0 then
-    warn(remaining .. " player(s) are still in this server; not confirmed teleported.")
-else
-    print("All target players have left the server.")
-end
-
-task.wait(30)
+task.wait(10)
 
 print("server hopping...")
 
