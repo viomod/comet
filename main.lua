@@ -47,6 +47,8 @@ Event:FireServer(
     }
 )
 
+task.wait(5)
+
 for _, player in ipairs(TargetPlayers) do
     print("Processing player:", player.Name)
 
@@ -61,7 +63,7 @@ for _, player in ipairs(TargetPlayers) do
     )
 end
 
-task.wait(30)
+task.wait(15)
 
 print("server hopping...")
 
